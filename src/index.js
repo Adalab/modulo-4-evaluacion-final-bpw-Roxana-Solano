@@ -1,17 +1,23 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const mysql = require("mysql2/promise");
 require("dotenv").config();
 
+// Creamos una vari con el servidor
 const server = express();
+
+// Configuramos server para que funcione bien como API
 server.use(cors());
 server.use(express.json());
 
+// Arrancamos el servidor en el puerto 4000
 const port = 4000;
 server.listen(port, () => {
-  console.log(`Servidor iniciado http://localhost:${port}`);
+  console.log(`Servidor iniciado <http://localhost:${port}>`);
 });
 
+// la función de conexión
 async function getConnection() {
   const connData = {
     host: process.env.MYSQL_HOST,
@@ -23,3 +29,92 @@ async function getConnection() {
   const conn = await mysql.createConnection(connData);
   return conn;
 }
+//ENDPOINT API servet.get () servet.pot()
+
+//prueba de la BD
+server.get("/api/frases", async (req, res) => {
+  const conn = await getConnection();
+  const [result] = await conn.query(`
+    SELECT * FROM simpsons.frases ;`);
+
+  await conn.end();
+
+  res.json({
+    info: { count: result.length },
+    results: result,
+  });
+});
+
+/* server.post("/api/recetas", async (req, res) => {
+  const conn = await getConnection();
+
+  const [result] = await conn.execute(
+    `INSERT INTO recetas (nombre, ingredientes, instrucciones)
+      VALUES (?,?,?);`,
+    [req.body.nombre, req.body.ingredientes, req.body.instrucciones]
+  );
+
+  await conn.end();
+
+  res.json({
+    success: true,
+    id: result.insertId,
+  });
+});
+
+server.put("/api/recetas/:id", async (req, res) => {
+  const conn = await getConnection();
+  const recetaId = req.params.id;
+
+  const [result] = await conn.execute(
+    `UPDATE recetas
+     SET nombre = ?, ingredientes = ?, instrucciones = ?
+     WHERE id = 3;`,
+    [req.body.nombre, req.body.ingredientes, req.body.instrucciones, recetaId]
+  );
+
+  await conn.end();
+
+  if (result.affectedRows === 0) {
+    res.json({
+      success: false,
+      message: "Receta no encontrada",
+    });
+  } else {
+    res.json({
+      success: true,
+    });
+  }
+});
+
+server.delete("/api/recetas/:id", async (req, res) => {
+  const conn = await getConnection();
+  const recetaId = req.params.id;
+
+  const [result] = await conn.execute(`DELETE FROM recetas WHERE id = ?;`, [
+    recetaId,
+  ]);
+
+  await conn.end();
+
+  if (result.affectedRows === 0) {
+    res.json({
+      success: false,
+      message: "Receta no encontrada",
+    });
+  } else {
+    res.json({
+      success: true,
+    });
+  }
+});
+ */
+//SERVIDOR DE FICH DINAMICOS (ejes) servet.get ()
+
+//n SERVIDOR DE FICHEROS ESTÁTICOS
+
+//ENPOINT DE TODO LO DEMÁS (ERROR 404)
+
+server.use(/.*/, (req, res) => {
+  res.status(404).send("Esta ruta no existe");
+});
