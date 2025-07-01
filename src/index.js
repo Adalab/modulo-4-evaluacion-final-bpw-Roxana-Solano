@@ -31,11 +31,22 @@ async function getConnection() {
 }
 //ENDPOINT API servet.get () servet.pot()
 
-//prueba de la BD
+//
 server.get("/api/frases", async (req, res) => {
   const conn = await getConnection();
+
   const [result] = await conn.query(`
-    SELECT * FROM simpsons.frases ;`);
+   SELECT 
+    f.id,
+    f.texto,
+    f.marca_tiempo,
+    f.descripcion,
+    p.nombre AS personaje_nombre,
+    p.apellidos AS personaje_apellido,
+    c.titulo AS capitulo_titulo
+  FROM frases f
+  LEFT JOIN personajes p ON f.personajes_id = p.id
+  LEFT JOIN capitulos c ON f.capitulos_idcap = c.id;`);
 
   await conn.end();
 
