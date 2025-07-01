@@ -93,6 +93,38 @@ server.get("/api/frases/:id", async (req, res) => {
   }
 });
 
+server.get("/api/personajes", async (req, res) => {
+  const conn = await getConnection();
+
+  const [result] = await conn.query(`
+    SELECT *
+    FROM personajes
+  `);
+
+  await conn.end();
+
+  res.json({
+    info: { count: result.length },
+    results: result,
+  });
+});
+
+server.get("/api/capitulos", async (req, res) => {
+  const conn = await getConnection();
+
+  const [result] = await conn.query(`
+    SELECT *
+    FROM capitulos
+  `);
+
+  await conn.end();
+
+  res.json({
+    info: { count: result.length },
+    results: result,
+  });
+});
+
 server.post("/api/frases", async (req, res) => {
   const conn = await getConnection();
 
