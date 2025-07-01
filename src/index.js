@@ -35,17 +35,18 @@ server.get("/api/frases", async (req, res) => {
   const conn = await getConnection();
 
   const [result] = await conn.query(`
-   SELECT 
-    f.id,
-    f.texto,
-    f.marca_tiempo,
-    f.descripcion,
-    p.nombre AS personaje_nombre,
-    p.apellidos AS personaje_apellido,
-    c.titulo AS capitulo_titulo
-  FROM frases f
-  LEFT JOIN personajes p ON f.personajes_id = p.id
-  LEFT JOIN capitulos c ON f.capitulos_idcap = c.id;`);
+    SELECT 
+      f.id,
+      f.texto,
+      f.marca_tiempo,
+      f.descripcion,
+      p.nombre AS personaje_nombre,
+      p.apellidos AS personaje_apellido,
+      c.titulo AS capitulo_titulo
+    FROM frases f
+    LEFT JOIN personajes p ON f.personajes_id = p.id
+    LEFT JOIN capitulos c ON f.capitulos_idcap = c.id;
+  `);
 
   await conn.end();
 
@@ -53,6 +54,43 @@ server.get("/api/frases", async (req, res) => {
     info: { count: result.length },
     results: result,
   });
+});
+
+server.get("/api/frases/:id", async (req, res) => {
+  const conn = await getConnection();
+  const fraseId = req.params.id;
+
+  const [result] = await conn.query(
+    `
+    SELECT 
+      f.id,
+      f.texto,
+      f.marca_tiempo,
+      f.descripcion,
+      p.nombre AS personaje_nombre,
+      p.apellidos AS personaje_apellido,
+      c.titulo AS capitulo_titulo
+    FROM frases f
+    LEFT JOIN personajes p ON f.personajes_id = p.id
+    LEFT JOIN capitulos c ON f.capitulos_idcap = c.id
+    WHERE f.id = ?;
+  `,
+    [fraseId]
+  );
+
+  await conn.end();
+
+  if (result.length === 0) {
+    res.status(404).json({
+      success: false,
+      message: "Frase no encontrada",
+    });
+  } else {
+    res.json({
+      success: true,
+      data: result[0],
+    });
+  }
 });
 
 server.post("/api/frases", async (req, res) => {
