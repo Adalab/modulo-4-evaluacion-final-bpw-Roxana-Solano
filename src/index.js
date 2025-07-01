@@ -31,7 +31,6 @@ async function getConnection() {
 }
 //ENDPOINT API servet.get () servet.pot()
 
-//
 server.get("/api/frases", async (req, res) => {
   const conn = await getConnection();
 
@@ -79,15 +78,22 @@ server.post("/api/frases", async (req, res) => {
   });
 });
 
-/*server.put("/api/recetas/:id", async (req, res) => {
+server.put("/api/frases/:id", async (req, res) => {
   const conn = await getConnection();
-  const recetaId = req.params.id;
+  const fraseId = req.params.id;
 
   const [result] = await conn.execute(
-    `UPDATE recetas
-     SET nombre = ?, ingredientes = ?, instrucciones = ?
-     WHERE id = 3;`,
-    [req.body.nombre, req.body.ingredientes, req.body.instrucciones, recetaId]
+    `UPDATE simpsons.frases
+    SET texto = ?, marca_tiempo = ?, descripcion = ?, personajes_id = ?, capitulos_idcap = ?
+     WHERE id = ?;`,
+    [
+      req.body.texto,
+      req.body.marca_tiempo,
+      req.body.descripcion,
+      req.body.personajes_id,
+      req.body.capitulos_idcap,
+      fraseId,
+    ]
   );
 
   await conn.end();
@@ -95,7 +101,7 @@ server.post("/api/frases", async (req, res) => {
   if (result.affectedRows === 0) {
     res.json({
       success: false,
-      message: "Receta no encontrada",
+      message: "No encontrada",
     });
   } else {
     res.json({
@@ -104,7 +110,7 @@ server.post("/api/frases", async (req, res) => {
   }
 });
 
-server.delete("/api/recetas/:id", async (req, res) => {
+/*server.delete("/api/recetas/:id", async (req, res) => {
   const conn = await getConnection();
   const recetaId = req.params.id;
 
