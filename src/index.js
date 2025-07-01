@@ -45,13 +45,19 @@ server.get("/api/frases", async (req, res) => {
   });
 });
 
-/* server.post("/api/recetas", async (req, res) => {
+server.post("/api/frases", async (req, res) => {
   const conn = await getConnection();
 
   const [result] = await conn.execute(
-    `INSERT INTO recetas (nombre, ingredientes, instrucciones)
-      VALUES (?,?,?);`,
-    [req.body.nombre, req.body.ingredientes, req.body.instrucciones]
+    `INSERT INTO frases (texto, marca_tiempo, descripcion, personajes_id, capitulos_idcap )
+      VALUES (?,?,?,?,?);`,
+    [
+      req.body.texto,
+      req.body.marca_tiempo,
+      req.body.descripcion,
+      req.body.personajes_id,
+      req.body.capitulos_idcap,
+    ]
   );
 
   await conn.end();
@@ -62,7 +68,7 @@ server.get("/api/frases", async (req, res) => {
   });
 });
 
-server.put("/api/recetas/:id", async (req, res) => {
+/*server.put("/api/recetas/:id", async (req, res) => {
   const conn = await getConnection();
   const recetaId = req.params.id;
 
