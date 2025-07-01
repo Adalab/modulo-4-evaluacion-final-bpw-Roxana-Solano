@@ -110,20 +110,21 @@ server.put("/api/frases/:id", async (req, res) => {
   }
 });
 
-/*server.delete("/api/recetas/:id", async (req, res) => {
+server.delete("/api/frases/:id", async (req, res) => {
   const conn = await getConnection();
-  const recetaId = req.params.id;
+  const fraseId = req.params.id;
 
-  const [result] = await conn.execute(`DELETE FROM recetas WHERE id = ?;`, [
-    recetaId,
-  ]);
+  const [result] = await conn.execute(
+    `DELETE FROM simpsons.frases WHERE id = ?;`,
+    [fraseId]
+  );
 
   await conn.end();
 
   if (result.affectedRows === 0) {
     res.json({
       success: false,
-      message: "Receta no encontrada",
+      message: " no encontrada",
     });
   } else {
     res.json({
@@ -131,7 +132,7 @@ server.put("/api/frases/:id", async (req, res) => {
     });
   }
 });
- */
+
 //SERVIDOR DE FICH DINAMICOS (ejes) servet.get ()
 
 //n SERVIDOR DE FICHEROS ESTÁTICOS
